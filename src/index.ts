@@ -1,24 +1,21 @@
-import { Hono } from 'hono'
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { notFound, onError } from 'stoker/middlewares';
+import logger from '@/middlewares/logger';
 
-const app = new Hono()
+// openAPIhono is a wrapper around hono that provides a lot of features
+const app = new OpenAPIHono();
 
-app.get('/', async (c) => {
-  return c.json({ message: 'Wakati API is active' })
-})
+// app.use(pinoLogger());
+app.use(logger());
+app.notFound(notFound);
+app.onError(onError);
 
-app.post('/analyze', async (c) => {
-  const body = await c.req.json()
+app.get('/err', (c) => {
+  throw new Error("What's this");
+});
 
-  const result = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-    messages: [
-      {
-        role: 'user',
-        content: body.prompt,
-      },
-    ],
-  })
+app.get('/', (c) => {
+  return c.json({ message: 'Hello from our API' });
+});
 
-  return c.json({ result })
-})
-
-export default app
+export default app;
