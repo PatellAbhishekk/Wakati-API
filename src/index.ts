@@ -3,7 +3,7 @@ import { notFound, onError } from 'stoker/middlewares';
 import logger from '@/middlewares/logger';
 
 // openAPIhono is a wrapper around hono that provides a lot of features
-const app = new OpenAPIHono();
+const app = new OpenAPIHono({ strict: false });
 
 // app.use(pinoLogger());
 app.use(logger());
